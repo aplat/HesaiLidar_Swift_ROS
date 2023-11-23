@@ -6,8 +6,6 @@ install(TARGETS pandar_rawdata
         RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
         ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
         LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
-set_target_properties(pandar_rawdata PROPERTIES
-	COMPILE_FLAGS -std=c++11)
 
 
 add_library(pandar_input input.cc platUtil.cc)
