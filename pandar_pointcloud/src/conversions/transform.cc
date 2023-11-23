@@ -30,10 +30,10 @@ namespace pandar_pointcloud
   Transform::Transform(ros::NodeHandle node, ros::NodeHandle private_nh):
     tf_prefix_(tf::getPrefixParam(private_nh)),
     data_(new pandar_rawdata::RawData()),
-    m_spConver(new Convert(node, private_nh,"transform"))
+    m_spConver(new Convert(node, private_nh, "transform"))
   {
     ROS_WARN(" Transform::Transform");
-    private_nh.getParam("frame_id", config_.frame_id);
+    // private_nh.getParam("frame_id", config_.frame_id);
     // Read calibration.
     data_->setup(private_nh);
 
@@ -47,24 +47,26 @@ namespace pandar_pointcloud
       CallbackType f;
     f = boost::bind (&Transform::reconfigure_callback, this, _1, _2);
     srv_->setCallback (f);
-    
+
     // subscribe to PandarScan packets using transform filter
-    
-    pandar_scan_.subscribe(node, "pandar_packets", 10);
-    tf_filter_ =
-      new tf::MessageFilter<pandar_msgs::PandarScan>(pandar_scan_,
-                                                         listener_,
-                                                         config_.frame_id, 10);
-    tf_filter_->registerCallback(boost::bind(&Transform::processScan, this, _1));
+    private_nh.getParam("packet_topic", config_.packet_topic);
+    pandar_scan_ = node.subscribe(config_.packet_topic, 10, &Transform::processScan, this);
+    // pandar_scan_.subscribe(node, "pandar_packets", 10);
+    // tf_filter_ =
+    //   new tf::MessageFilter<pandar_msgs::PandarScan>(pandar_scan_,
+    //                                                      listener_,
+    //                                                      config_.frame_id, 10);
+    // tf_filter_->registerCallback(boost::bind(&Transform::processScan, this, _1));
+
     ROS_WARN(" Transform::processScan config[%s]",config_.frame_id.c_str());
     ROS_WARN(" Transform::Transform finisher");
   }
-  
+
   void Transform::reconfigure_callback(
       pandar_pointcloud::TransformNodeConfig &config, uint32_t level)
   {
     ROS_INFO_STREAM("Reconfigure request.");
-    data_->setParameters(config.min_range, config.max_range, 
+    data_->setParameters(config.min_range, config.max_range,
                          config.view_direction, config.view_width);
     config_.frame_id = tf::resolve(tf_prefix_, config.frame_id);
     ROS_INFO_STREAM("Target frame ID: " << config_.frame_id);

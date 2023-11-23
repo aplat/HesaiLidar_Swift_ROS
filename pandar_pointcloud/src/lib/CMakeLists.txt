@@ -1,5 +1,5 @@
 add_library(pandar_rawdata rawdata.cc calibration.cc)
-target_link_libraries(pandar_rawdata 
+target_link_libraries(pandar_rawdata
                       ${catkin_LIBRARIES}
                       ${YAML_CPP_LIBRARIES})
 install(TARGETS pandar_rawdata

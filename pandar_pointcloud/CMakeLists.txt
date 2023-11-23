@@ -17,9 +17,17 @@ set(${PROJECT_NAME}_CATKIN_DEPS
     tf
 )
 
+add_definitions(-w)
+
+
 find_package(catkin REQUIRED COMPONENTS
              ${${PROJECT_NAME}_CATKIN_DEPS} pcl_conversions)
 find_package(Boost COMPONENTS signals)
+
+include_directories(
+  ${PCL_INCLUDE_DIRS}
+)
+
 
 # Resolve system dependency on yaml-cpp, which apparently does not
 # provide a CMake find_package() module.
@@ -45,7 +53,7 @@ if(NOT ${YAML_CPP_VERSION} VERSION_LESS "0.5")
 add_definitions(-DHAVE_NEW_YAMLCPP)
 endif(NOT ${YAML_CPP_VERSION} VERSION_LESS "0.5")
 
-include_directories(include ${catkin_INCLUDE_DIRS} 
+include_directories(include ${catkin_INCLUDE_DIRS}
   ${dynamic_reconfigure_PACKAGE_PATH}/cmake/cfgbuild.cmake
 )
 
@@ -53,7 +61,7 @@ catkin_package(
     CATKIN_DEPENDS ${${PROJECT_NAME}_CATKIN_DEPS}
     INCLUDE_DIRS include
     LIBRARIES pandar_rawdata)
-    
+
 #add_executable(dynamic_reconfigure_node src/dynamic_reconfigure_node.cpp)
 #target_link_libraries(dynamic_reconfigure_node
 #   ${catkin_LIBRARIES}

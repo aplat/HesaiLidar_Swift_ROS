@@ -64,11 +64,12 @@ namespace pandar_pointcloud
       TransformNodeConfig> > srv_;
     void reconfigure_callback(pandar_pointcloud::TransformNodeConfig &config,
                   uint32_t level);
-    
+
     const std::string tf_prefix_;
     boost::shared_ptr<pandar_rawdata::RawData> data_;
     boost::shared_ptr<Convert> m_spConver;
-    message_filters::Subscriber<pandar_msgs::PandarScan> pandar_scan_;
+    // message_filters::Subscriber<pandar_msgs::PandarScan> pandar_scan_;
+    ros::Subscriber pandar_scan_;
     tf::MessageFilter<pandar_msgs::PandarScan> *tf_filter_;
     ros::Publisher output_;
     tf::TransformListener listener_;
@@ -76,6 +77,7 @@ namespace pandar_pointcloud
     /// configuration parameters
     typedef struct {
       std::string frame_id;          ///< target frame ID
+      std::string packet_topic;      ///< packet topic name
     } Config;
     Config config_;
 
